@@ -1,7 +1,8 @@
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration;
 using Project.Service.Data;
 using SQLitePCL;
+using Project.Service.Service;
+
 
 Batteries.Init();
 
@@ -21,25 +22,27 @@ builder.Services.AddDbContext<ProjectServiceContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-    var app = builder.Build();
+builder.Services.AddScoped<IVehicleService, VehicleService>();
 
-    // Configure the HTTP request pipeline.
-    if (!app.Environment.IsDevelopment())
-    {
-        app.UseExceptionHandler("/Home/Error");
-        // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-        app.UseHsts();
-    }
+var app = builder.Build();
 
-    app.UseHttpsRedirection();
-    app.UseStaticFiles();
+// Configure the HTTP request pipeline.
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/Home/Error");
+    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+    app.UseHsts();
+}
 
-    app.UseRouting();
+app.UseHttpsRedirection();
+app.UseStaticFiles();
 
-    app.UseAuthorization();
+app.UseRouting();
 
-    app.MapControllerRoute(
-        name: "default",
-        pattern: "{controller=Home}/{action=Index}/{id?}");
+app.UseAuthorization();
 
-    app.Run();
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.Run();
