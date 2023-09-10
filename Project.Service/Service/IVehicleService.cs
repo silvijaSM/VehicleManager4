@@ -15,5 +15,7 @@ namespace Project.Service.Service
         void CreateVehicleModel(VehicleModel model);
         void UpdateVehicleModel(VehicleModel model);
         void DeleteVehicleModel(int id);
+        bool VehicleModelExists(int id);
+        bool VehicleMakeExists(int id);
     }
 }

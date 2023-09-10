@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Project.Service.Data;
 using Project.Service.Models;
 using Project.Service.Service;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Project.MVC.Controllers
 {
@@ -23,10 +20,12 @@ namespace Project.MVC.Controllers
             string sortOrder,
             string currentFilter,
             string searchString,
+            string selectedMake, 
             int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
+            ViewData["AbrvSortParm"] = sortOrder == "abrv" ? "abrv_desc" : "abrv";
 
             if (searchString != null)
             {
@@ -41,28 +40,35 @@ namespace Project.MVC.Controllers
 
             var vehicleMakes = _vehicleService.GetAllVehicleMakes();
 
-            // Apply filtering
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(selectedMake))
             {
-                vehicleMakes = (List<VehicleMake>)vehicleMakes.Where(make => make.Name.Contains(searchString) || make.Abrv.Contains(searchString));
+                vehicleMakes = (List<VehicleMake>)vehicleMakes.Where(make => make.Name == selectedMake);
             }
 
-            // Apply sorting
-            vehicleMakes = sortOrder switch
+            switch (sortOrder)
             {
-                "name_desc" => vehicleMakes.OrderByDescending(make => make.Name),
-                "Abrv" => vehicleMakes.OrderBy(make => make.Abrv),
-                "abrv_desc" => vehicleMakes.OrderByDescending(make => make.Abrv),
-                _ => vehicleMakes.OrderBy(make => make.Name),
-            };
+                case "name_desc":
+                    vehicleMakes = vehicleMakes.OrderByDescending(make => make.Name);
+                    break;
+                case "abrv":
+                    vehicleMakes = vehicleMakes.OrderBy(make => make.Abrv);
+                    break;
+                case "abrv_desc":
+                    vehicleMakes = vehicleMakes.OrderByDescending(make => make.Abrv);
+                    break;
+                default:
+                    vehicleMakes = vehicleMakes.OrderBy(make => make.Name);
+                    break;
+            }
 
             int pageSize = 10;
-
             return View(await PaginatedList<VehicleMake>.CreateAsync(vehicleMakes.AsQueryable(), pageNumber ?? 1, pageSize));
         }
 
         // GET: VehicleMakes/Details/5
-        public IActionResult Details(int? id)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<IActionResult> Details(int? id)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (id == null)
             {
@@ -85,10 +91,11 @@ namespace Project.MVC.Controllers
             return View();
         }
 
-        // POST: VehicleMakes/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Name,Abrv")] VehicleMake vehicleMake)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<IActionResult> Create([Bind("Id,Name,Abrv")] VehicleMake vehicleMake)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (ModelState.IsValid)
             {
@@ -112,14 +119,14 @@ namespace Project.MVC.Controllers
             {
                 return NotFound();
             }
-
             return View(vehicleMake);
         }
 
-        // POST: VehicleMakes/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,Name,Abrv")] VehicleMake vehicleMake)
+#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Abrv")] VehicleMake vehicleMake)
+#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
         {
             if (id != vehicleMake.Id)
             {
@@ -128,7 +135,21 @@ namespace Project.MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                _vehicleService.UpdateVehicleMake(vehicleMake);
+                try
+                {
+                    _vehicleService.UpdateVehicleMake(vehicleMake);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_vehicleService.VehicleMakeExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleMake);
@@ -152,19 +173,13 @@ namespace Project.MVC.Controllers
             return View(vehicleMake);
         }
 
-        // POST: VehicleMakes/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+
         public IActionResult DeleteConfirmed(int id)
         {
             _vehicleService.DeleteVehicleMake(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool VehicleMakeExists(int id)
-        {
-            var vehicleMake = _vehicleService.GetVehicleMakeById(id);
-            return vehicleMake != null;
         }
     }
 }

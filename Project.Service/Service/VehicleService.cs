@@ -4,7 +4,7 @@ using Project.Service.Models;
 
 namespace Project.Service.Service
 {
-    public class VehicleService
+    public class VehicleService : IVehicleService
     {
         private readonly ProjectServiceContext _context;
 
@@ -75,6 +75,16 @@ namespace Project.Service.Service
                 _context.VehicleModel.Remove(make);
                 _context.SaveChanges();
             }
+        }
+
+        public bool VehicleModelExists(int id)
+        {
+            return _context.VehicleModel.Any(model => model.Id == id);
+        }
+
+        public bool VehicleMakeExists(int id)
+        {
+            return _context.VehicleMake.Any(make => make.Id == id);
         }
     }
 }

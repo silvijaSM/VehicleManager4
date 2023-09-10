@@ -1,9 +1,9 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Project.Service.Data;
 using Project.Service.Models;
 using Project.Service.Service;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -23,10 +23,12 @@ namespace Project.MVC.Controllers
             string sortOrder,
             string currentFilter,
             string searchString,
+            string selectedMake,
             int? pageNumber)
         {
+            ViewData["CurrentSort"] = sortOrder;
             ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
+            ViewData["AbrvSortParm"] = sortOrder == "abrv" ? "abrv_desc" : "abrv";
 
             if (searchString != null)
             {
@@ -41,24 +43,23 @@ namespace Project.MVC.Controllers
 
             var vehicleModels = _vehicleService.GetAllVehicleModels();
 
-            // Apply filtering
-            if (!String.IsNullOrEmpty(searchString))
+            if (!string.IsNullOrEmpty(selectedMake))
             {
-                vehicleModels = (List<VehicleModel>)vehicleModels.Where(model => model.Name.Contains(searchString) || model.Abrv.Contains(searchString));
+                if (!string.IsNullOrEmpty(selectedMake))
+                {
+                    vehicleModels = vehicleModels.Where(model => model.Make?.Name == selectedMake).ToList();
+                }
             }
 
-            // Apply sorting
             vehicleModels = sortOrder switch
             {
-                "name_desc" => vehicleModels.OrderByDescending(model => model.Name),
-                "Abrv" => vehicleModels.OrderBy(model => model.Abrv),
-                "abrv_desc" => vehicleModels.OrderByDescending(model => model.Abrv),
-                _ => vehicleModels.OrderBy(model => model.Name),
+                "name_desc" => (List<VehicleModel>)vehicleModels.OrderByDescending(model => model.Name),
+                "abrv" => (List<VehicleModel>)vehicleModels.OrderBy(model => model.Abrv),
+                "abrv_desc" => (List<VehicleModel>)vehicleModels.OrderByDescending(model => model.Abrv),
+                _ => (List<VehicleModel>)vehicleModels.OrderBy(model => model.Name),
             };
-
             int pageSize = 10;
-
-            return View(await PaginatedList<VehicleModel>.CreateAsync(vehicleModels.AsQueryable(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<VehicleModel>.CreateAsync((IQueryable<VehicleModel>)vehicleModels, pageNumber ?? 1, pageSize));
         }
 
         // GET: VehicleModels/Details/5
@@ -85,10 +86,9 @@ namespace Project.MVC.Controllers
             return View();
         }
 
-        // POST: VehicleModels/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("MakeID,Name,Abrv")] VehicleModel vehicleModel)
+        public IActionResult Create([Bind("Id,Make,Name,Abrv")] VehicleModel vehicleModel)
         {
             if (ModelState.IsValid)
             {
@@ -112,14 +112,12 @@ namespace Project.MVC.Controllers
             {
                 return NotFound();
             }
-
             return View(vehicleModel);
         }
 
-        // POST: VehicleModels/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int id, [Bind("Id,MakeID,Name,Abrv")] VehicleModel vehicleModel)
+        public IActionResult Edit(int id, [Bind("Id,Make,Name,Abrv")] VehicleModel vehicleModel)
         {
             if (id != vehicleModel.Id)
             {
@@ -128,7 +126,21 @@ namespace Project.MVC.Controllers
 
             if (ModelState.IsValid)
             {
-                _vehicleService.UpdateVehicleModel(vehicleModel);
+                try
+                {
+                    _vehicleService.UpdateVehicleModel(vehicleModel);
+                }
+                catch (DbUpdateConcurrencyException)
+                {
+                    if (!_vehicleService.VehicleModelExists(id))
+                    {
+                        return NotFound();
+                    }
+                    else
+                    {
+                        throw;
+                    }
+                }
                 return RedirectToAction(nameof(Index));
             }
             return View(vehicleModel);
@@ -152,19 +164,12 @@ namespace Project.MVC.Controllers
             return View(vehicleModel);
         }
 
-        // POST: VehicleModels/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public IActionResult DeleteConfirmed(int id)
         {
             _vehicleService.DeleteVehicleModel(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool VehicleModelExists(int id)
-        {
-            var vehicleModel = _vehicleService.GetVehicleModelById(id);
-            return vehicleModel != null;
         }
     }
 }
