@@ -25,4 +25,10 @@
     <Folder Include="Database\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="Database\VehicleManager.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

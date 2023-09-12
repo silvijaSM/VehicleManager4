@@ -1,6 +1,7 @@
-﻿using Project.Service.Data;
+﻿using System.Linq;
+using Microsoft.EntityFrameworkCore;
+using Project.Service.Data;
 using Project.Service.Models;
-
 
 namespace Project.Service.Service
 {
@@ -13,9 +14,9 @@ namespace Project.Service.Service
             _context = context;
         }
 
-        public List<VehicleMake> GetAllVehicleMakes()
+        public IQueryable<VehicleMake> GetAllVehicleMakes()
         {
-            return _context.VehicleMake.ToList();
+            return _context.VehicleMake.AsQueryable();
         }
 
         public VehicleMake? GetVehicleMakeById(int id)
@@ -31,7 +32,7 @@ namespace Project.Service.Service
 
         public void UpdateVehicleMake(VehicleMake make)
         {
-            _context.Entry(make).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(make).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
@@ -45,9 +46,9 @@ namespace Project.Service.Service
             }
         }
 
-        public List<VehicleModel> GetAllVehicleModels()
+        public IQueryable<VehicleModel> GetAllVehicleModels()
         {
-            return _context.VehicleModel.ToList();
+            return _context.VehicleModel.AsQueryable();
         }
 
         public VehicleModel? GetVehicleModelById(int id)
@@ -55,24 +56,24 @@ namespace Project.Service.Service
             return _context.VehicleModel.Find(id);
         }
 
-        public void CreateVehicleModel(VehicleModel make)
+        public void CreateVehicleModel(VehicleModel model)
         {
-            _context.VehicleModel.Add(make);
+            _context.VehicleModel.Add(model);
             _context.SaveChanges();
         }
 
-        public void UpdateVehicleModel(VehicleModel make)
+        public void UpdateVehicleModel(VehicleModel model)
         {
-            _context.Entry(make).State = Microsoft.EntityFrameworkCore.EntityState.Modified;
+            _context.Entry(model).State = EntityState.Modified;
             _context.SaveChanges();
         }
 
         public void DeleteVehicleModel(int id)
         {
-            var make = _context.VehicleModel.Find(id);
-            if (make != null)
+            var model = _context.VehicleModel.Find(id);
+            if (model != null)
             {
-                _context.VehicleModel.Remove(make);
+                _context.VehicleModel.Remove(model);
                 _context.SaveChanges();
             }
         }

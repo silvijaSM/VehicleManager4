@@ -1,10 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Service.Data;
-using SQLitePCL;
 using Project.Service.Service;
 
-
-Batteries.Init();
 
 var builder = WebApplication.CreateBuilder(args);
 

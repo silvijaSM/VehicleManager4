@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Project.Service.Data;
 using Project.Service.Models;
@@ -20,14 +21,14 @@ namespace Project.MVC.Controllers
 
         // GET: VehicleModels
         public async Task<IActionResult> Index(
-            string sortOrder,
-            string currentFilter,
-            string searchString,
-            string selectedMake,
-            int? pageNumber)
+    string sortOrder,
+    string currentFilter,
+    string searchString,
+    string selectedMake,
+    int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
             ViewData["AbrvSortParm"] = sortOrder == "abrv" ? "abrv_desc" : "abrv";
 
             if (searchString != null)
@@ -41,25 +42,23 @@ namespace Project.MVC.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var vehicleModels = _vehicleService.GetAllVehicleModels();
+            var vehicleModelsQuery = _vehicleService.GetAllVehicleModels().AsQueryable();
 
             if (!string.IsNullOrEmpty(selectedMake))
             {
-                if (!string.IsNullOrEmpty(selectedMake))
-                {
-                    vehicleModels = vehicleModels.Where(model => model.Make?.Name == selectedMake).ToList();
-                }
+                vehicleModelsQuery = vehicleModelsQuery.Where(model => model.Name == selectedMake);
             }
 
-            vehicleModels = sortOrder switch
+            vehicleModelsQuery = sortOrder switch
             {
-                "name_desc" => (List<VehicleModel>)vehicleModels.OrderByDescending(model => model.Name),
-                "abrv" => (List<VehicleModel>)vehicleModels.OrderBy(model => model.Abrv),
-                "abrv_desc" => (List<VehicleModel>)vehicleModels.OrderByDescending(model => model.Abrv),
-                _ => (List<VehicleModel>)vehicleModels.OrderBy(model => model.Name),
+                "name_desc" => vehicleModelsQuery.OrderByDescending(model => model.Name),
+                "abrv" => vehicleModelsQuery.OrderBy(model => model.Abrv),
+                "abrv_desc" => vehicleModelsQuery.OrderByDescending(model => model.Abrv),
+                _ => vehicleModelsQuery.OrderBy(model => model.Name),
             };
+
             int pageSize = 10;
-            return View(await PaginatedList<VehicleModel>.CreateAsync((IQueryable<VehicleModel>)vehicleModels, pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<VehicleModel>.CreateAsync(vehicleModelsQuery, pageNumber ?? 1, pageSize));
         }
 
         // GET: VehicleModels/Details/5
@@ -83,12 +82,17 @@ namespace Project.MVC.Controllers
         // GET: VehicleModels/Create
         public IActionResult Create()
         {
+            var vehicleMakes = _vehicleService.GetAllVehicleMakes();
+            var makeList = new SelectList(vehicleMakes, "Id", "Id");
+
+            ViewData["MakeList"] = makeList;
+
             return View();
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind("Id,Make,Name,Abrv")] VehicleModel vehicleModel)
+        public IActionResult Create([Bind("Id,MakeID,Name,Abrv")] VehicleModel vehicleModel)
         {
             if (ModelState.IsValid)
             {

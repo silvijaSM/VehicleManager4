@@ -38,31 +38,23 @@ namespace Project.MVC.Controllers
 
             ViewData["CurrentFilter"] = searchString;
 
-            var vehicleMakes = _vehicleService.GetAllVehicleMakes();
+            var vehicleMakesQuery = _vehicleService.GetAllVehicleMakes().AsQueryable();
 
             if (!string.IsNullOrEmpty(selectedMake))
             {
-                vehicleMakes = (List<VehicleMake>)vehicleMakes.Where(make => make.Name == selectedMake);
+                vehicleMakesQuery = vehicleMakesQuery.Where(make => make.Name == selectedMake);
             }
 
-            switch (sortOrder)
+            vehicleMakesQuery = sortOrder switch
             {
-                case "name_desc":
-                    vehicleMakes = vehicleMakes.OrderByDescending(make => make.Name);
-                    break;
-                case "abrv":
-                    vehicleMakes = vehicleMakes.OrderBy(make => make.Abrv);
-                    break;
-                case "abrv_desc":
-                    vehicleMakes = vehicleMakes.OrderByDescending(make => make.Abrv);
-                    break;
-                default:
-                    vehicleMakes = vehicleMakes.OrderBy(make => make.Name);
-                    break;
-            }
+                "name_desc" => vehicleMakesQuery.OrderByDescending(make => make.Name),
+                "abrv" => vehicleMakesQuery.OrderBy(make => make.Abrv),
+                "abrv_desc" => vehicleMakesQuery.OrderByDescending(make => make.Abrv),
+                _ => vehicleMakesQuery.OrderBy(make => make.Name),
+            };
 
             int pageSize = 10;
-            return View(await PaginatedList<VehicleMake>.CreateAsync(vehicleMakes.AsQueryable(), pageNumber ?? 1, pageSize));
+            return View(await PaginatedList<VehicleMake>.CreateAsync(vehicleMakesQuery, pageNumber ?? 1, pageSize));
         }
 
         // GET: VehicleMakes/Details/5
