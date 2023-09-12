@@ -58,9 +58,7 @@ namespace Project.MVC.Controllers
         }
 
         // GET: VehicleMakes/Details/5
-#pragma warning disable CS1998 // Async method lacks 'await' operators and will run synchronously
-        public async Task<IActionResult> Details(int? id)
-#pragma warning restore CS1998 // Async method lacks 'await' operators and will run synchronously
+        public IActionResult Details(int? id)
         {
             if (id == null)
             {
