@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project.Service.Models
+namespace Project.Service.Models.ViewModels
 {
-    public class VehicleMake
+    internal class VehicleMakeView
     {
         public int Id { get; set; }
         public string? Name { get; set; }

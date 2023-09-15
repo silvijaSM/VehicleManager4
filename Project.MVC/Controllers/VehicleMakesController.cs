@@ -1,7 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Project.Service.Data;
-using Project.Service.Models;
+using Project.Service.Models.Entity;
 using Project.Service.Service;
 
 namespace Project.MVC.Controllers

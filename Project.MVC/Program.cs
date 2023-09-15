@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Service.Data;
-using Project.Service.Service;
-
+using Project.Service.Mapping;
+using Project.Service.Service.VehicleServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,7 +19,10 @@ builder.Services.AddDbContext<ProjectServiceContext>(options =>
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
-builder.Services.AddScoped<IVehicleService, VehicleService>();
+builder.Services.AddScoped<IVehicleMakeService, VehicleMakeService>();
+builder.Services.AddScoped<IVehicleModelService, VehicleModelService>();
+
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
