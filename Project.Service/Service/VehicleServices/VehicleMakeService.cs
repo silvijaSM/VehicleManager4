@@ -1,10 +1,7 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Project.Service.Data;
+﻿using Project.Service.Data;
 using Project.Service.Models.Entity;
-using System;
-using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace Project.Service.Service.VehicleServices
@@ -18,41 +15,41 @@ namespace Project.Service.Service.VehicleServices
             _context = context;
         }
 
-        public IQueryable<VehicleMake> GetAllVehicleMakes()
+        public async Task<IQueryable<VehicleMake>> GetAllVehicleMakesAsync()
         {
-            return _context.VehicleMake.AsQueryable();
+            return await Task.FromResult(_context.VehicleMake.AsQueryable());
         }
 
-        public VehicleMake? GetVehicleMakeById(int id)
+        public async Task<VehicleMake?> GetVehicleMakeByIdAsync(int id)
         {
-            return _context.VehicleMake.Find(id);
+            return await _context.VehicleMake.FindAsync(id);
         }
 
-        public void CreateVehicleMake(VehicleMake make)
+        public async Task CreateVehicleMakeAsync(VehicleMake make)
         {
             _context.VehicleMake.Add(make);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void UpdateVehicleMake(VehicleMake make)
+        public async Task UpdateVehicleMakeAsync(VehicleMake make)
         {
             _context.Entry(make).State = EntityState.Modified;
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteVehicleMake(int id)
+        public async Task DeleteVehicleMakeAsync(int id)
         {
-            var make = _context.VehicleMake.Find(id);
+            var make = await _context.VehicleMake.FindAsync(id);
             if (make != null)
             {
                 _context.VehicleMake.Remove(make);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
 
-        public bool VehicleMakeExists(int id)
+        public async Task<bool> VehicleMakeExistsAsync(int id)
         {
-            return _context.VehicleMake.Any(make => make.Id == id);
+            return await _context.VehicleMake.AnyAsync(make => make.Id == id);
         }
     }
 }

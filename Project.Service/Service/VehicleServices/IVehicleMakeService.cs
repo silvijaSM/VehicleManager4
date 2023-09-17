@@ -9,11 +9,11 @@ namespace Project.Service.Service.VehicleServices
 {
     public interface IVehicleMakeService
     {
-        IQueryable<VehicleMake> GetAllVehicleMakes();
-        VehicleMake? GetVehicleMakeById(int id);
-        void CreateVehicleMake(VehicleMake make);
-        void UpdateVehicleMake(VehicleMake make);
-        void DeleteVehicleMake(int id);
-        bool VehicleMakeExists(int id);
+        Task<IQueryable<VehicleMake>> GetAllVehicleMakesAsync();
+        Task<VehicleMake?> GetVehicleMakeByIdAsync(int id);
+        Task CreateVehicleMakeAsync(VehicleMake make);
+        Task UpdateVehicleMakeAsync(VehicleMake make);
+        Task DeleteVehicleMakeAsync(int id);
+        Task<bool> VehicleMakeExistsAsync(int id);
     }
 }

@@ -1,4 +1,4 @@
-﻿@model VehicleMake
+﻿@model Project.Service.Models.ViewModels.VehicleMakeView
 
 @{
     ViewData["Title"] = "Delete";
@@ -8,26 +8,24 @@
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
-    <h4>VehicleMake</h4>
     <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
+    <dl class="dl-horizontal">
+        <dt>
             @Html.DisplayNameFor(model => model.Name)
         </dt>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Name)
         </dd>
-        <dt class="col-sm-2">
+        <dt>
             @Html.DisplayNameFor(model => model.Abrv)
         </dt>
-        <dd class="col-sm-10">
+        <dd>
             @Html.DisplayFor(model => model.Abrv)
         </dd>
     </dl>
 
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="Id" />
-        <input type="submit" value="Delete" class="btn btn-danger" /> |
+    <form asp-action="Delete" asp-route-id="@Model.Id" method="post">
+        <input type="submit" value="Delete" class="btn btn-danger" />
         <a asp-action="Index" class="btn btn-secondary">Back to List</a>
     </form>
 </div>

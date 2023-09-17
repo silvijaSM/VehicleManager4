@@ -12,6 +12,6 @@ namespace Project.Service.Models.ViewModels
         public string? Name { get; set; }
 
         public string? Abrv { get; set; }
-        public string? Make { get; set; }
+        public int MakeID { get; set; }
     }
 }
