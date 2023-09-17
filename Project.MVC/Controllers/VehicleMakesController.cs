@@ -1,15 +1,15 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Project.Service.Models.Entity;
-using Project.Service.Service;
+using Project.Service.Service.VehicleServices;
 
 namespace Project.MVC.Controllers
 {
     public class VehicleMakesController : Controller
     {
-        private readonly IVehicleService _vehicleService;
+        private readonly IVehicleMakeService _vehicleService;
 
-        public VehicleMakesController(IVehicleService vehicleService)
+        public VehicleMakesController(IVehicleMakeService vehicleService)
         {
             _vehicleService = vehicleService;
         }

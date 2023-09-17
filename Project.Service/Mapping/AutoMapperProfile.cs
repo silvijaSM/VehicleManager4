@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 using Project.Service.Models.Entity;
-using Project.Service.Models.ViewModels;
+using Project.MVC.Models.ViewModels;
 
 
 namespace Project.Service.Mapping
