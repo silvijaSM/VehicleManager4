@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Service.Data;
 using Project.Service.Mapping;
+using Project.Service.Service;
 using Project.Service.Service.VehicleServices;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -21,6 +22,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<IVehicleMakeService, VehicleMakeService>();
 builder.Services.AddScoped<IVehicleModelService, VehicleModelService>();
+builder.Services.AddScoped<Filters>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Project.Service.Service;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,5 +12,10 @@ namespace Project.Service.Models.ViewModels
         public int Id { get; set; }
         public string? Name { get; set; }
         public string? Abrv { get; set; }
+
+        public List<VehicleMakeView>? Makes  { get; set; }
+        public Filters? Filters { get; set; }
+        public int? TotalPages { get; set; }
+        public int? CurrentPage { get; set; }
     }
 }

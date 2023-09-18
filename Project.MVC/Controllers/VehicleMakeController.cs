@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Project.Service.Models.Entity;
 using Project.Service.Models.ViewModels;
 using Project.Service.Service.VehicleServices;
+using Project.Service.Service;
 
 namespace Project.MVC.Controllers
 {
@@ -10,11 +11,13 @@ namespace Project.MVC.Controllers
     {
         private readonly IVehicleMakeService _vehicleMakeService;
         private readonly IMapper _mapper;
+        private readonly Filters _filters;
 
-        public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper)
+        public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper, Filters filters)
         {
             _vehicleMakeService = vehicleMakeService;
             _mapper = mapper;
+            _filters = filters;
         }
 
         // GET: VehicleMake
@@ -22,10 +25,16 @@ namespace Project.MVC.Controllers
         {
             try
             {
-                var makes = await _vehicleMakeService.GetAllVehicleMakesAsync();
-                var makeViewModels = _mapper.Map<List<VehicleMakeView>>(makes.ToList());
+                var allMakes = await _vehicleMakeService.GetAllVehicleMakesAsync();
+                var makeViewModels = _mapper.Map<List<VehicleMakeView>>(allMakes.ToList());
 
-                return View(makeViewModels);
+                var vehicleMakeViewModel = new VehicleMakeView
+                {
+                    Makes = makeViewModels,
+                    Filters = new Filters()
+                };
+
+                return View(vehicleMakeViewModel);
             }
             catch (Exception)
             {

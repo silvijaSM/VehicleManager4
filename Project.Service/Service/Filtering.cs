@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project.Service.Service
 {
-    public class Filtering<TEntity>
+    public class Filtering
     {
         public string? SearchString { get; set; }
         public string? MakeFilter { get; set; }

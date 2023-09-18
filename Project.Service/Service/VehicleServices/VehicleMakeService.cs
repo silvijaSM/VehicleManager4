@@ -15,6 +15,46 @@ namespace Project.Service.Service.VehicleServices
             _context = context;
         }
 
+        public async Task<List<VehicleMake>> GetFilteredAndSortedMakesAsync(Filters filters)
+        {
+            var query = _context.VehicleMake.AsQueryable();
+
+
+            if (!string.IsNullOrEmpty(filters.Filtering.SearchString))
+            {
+                query = query.Where(make => make.Name != null && make.Name.Contains(filters.Filtering.SearchString));
+            }
+
+            int totalItems = await query.CountAsync();
+
+            if (!string.IsNullOrEmpty(filters.Sorting.SortOrder))
+            {
+                switch (filters.Sorting.SortOrder)
+                {
+                    case "Name":
+                        query = query.OrderBy(make => make.Name);
+                        break;
+                    case "name_desc":
+                        query = query.OrderByDescending(make => make.Name);
+                        break;
+                    case "Abrv":
+                        query = query.OrderBy(make => make.Abrv);
+                        break;
+                    case "abrv_desc":
+                        query = query.OrderByDescending(make => make.Abrv);
+                        break;
+                }
+            }
+
+            query = query.Skip((filters.Pagination.PageNumber - 1) * filters.Pagination.PageSize)
+                         .Take(filters.Pagination.PageSize);
+
+            var items = await query.ToListAsync();
+
+            return await query.ToListAsync();
+        }
+
+
         public async Task<IQueryable<VehicleMake>> GetAllVehicleMakesAsync()
         {
             return await Task.FromResult(_context.VehicleMake.AsQueryable());

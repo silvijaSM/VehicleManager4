@@ -9,15 +9,13 @@ namespace Project.Service.Service
 {
     public class Filters
     {
-        public Filtering<VehicleMake> MakeFiltering { get; set; }
-        public Filtering<VehicleModel> ModelFiltering { get; set; }
+        public Filtering Filtering { get; set; }
         public Sorting Sorting { get; set; }
         public Pagination Pagination { get; set; }
 
         public Filters()
         {
-            MakeFiltering = new Filtering<VehicleMake>();
-            ModelFiltering = new Filtering<VehicleModel>();
+            Filtering = new Filtering();
             Sorting = new Sorting();
             Pagination = new Pagination();
         }
