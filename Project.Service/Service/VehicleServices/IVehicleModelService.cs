@@ -10,6 +10,7 @@ namespace Project.Service.Service.VehicleServices
     public interface IVehicleModelService
     {
         Task<IQueryable<VehicleModel>> GetAllVehicleModelsAsync();
+        Task<List<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters);
         Task<VehicleModel?> GetVehicleModelByIdAsync(int id);
         Task CreateVehicleModelAsync(VehicleModel model);
         Task UpdateVehicleModelAsync(VehicleModel model);

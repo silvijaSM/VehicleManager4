@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Project.Service.Models.Entity;
 using Project.Service.Models.ViewModels;
+using Project.Service.Service;
 using Project.Service.Service.VehicleServices;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,22 +14,56 @@ namespace Project.MVC.Controllers
     {
         private readonly IVehicleModelService _vehicleModelService;
         private readonly IMapper _mapper;
+        private readonly Filters _filters;
 
-        public VehicleModelController(IVehicleModelService vehicleModelService, IMapper mapper)
+        public VehicleModelController(IVehicleModelService vehicleModelService, IMapper mapper, Filters filters)
         {
             _vehicleModelService = vehicleModelService;
             _mapper = mapper;
+            _filters = filters;
         }
 
-        // GET: VehicleModel
-        public async Task<IActionResult> Index()
+        // GET: VehicleMake
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                pageNumber = 1;
+            }
+
+            var filters = new Filters
+            {
+                Sorting = new Sorting { SortOrder = sortOrder },
+                Filtering = new Filtering { SearchString = searchString },
+                Pagination = new Pagination { PageNumber = pageNumber ?? 1, PageSize = 10 }
+            };
+
+            ViewData["CurrentFilter"] = searchString;
+
             try
             {
-                var models = await _vehicleModelService.GetAllVehicleModelsAsync();
-                var modelViewModels = _mapper.Map<List<VehicleModelView>>(models.ToList());
+                var models = await _vehicleModelService.GetFilteredAndSortedMakesAsync(filters);
 
-                return View(modelViewModels);
+                var modelViewModels = _mapper.Map<List<VehicleModelView>>(models);
+
+                var totalItems = modelViewModels.Count;
+
+                var pageSize = filters.Pagination.PageSize;
+                var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
+
+                var vehicleModelViewModel = new VehicleModelView
+                {
+                    Models = modelViewModels,
+                    Filters = filters,
+                    TotalPages = totalPages,
+                    CurrentPage = filters.Pagination.PageNumber,
+                    PageSize = pageSize
+                };
+
+                return View(vehicleModelViewModel);
             }
             catch (Exception)
             {
