@@ -21,17 +21,43 @@ namespace Project.MVC.Controllers
         }
 
         // GET: VehicleMake
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
+            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
+
+            if (!string.IsNullOrEmpty(searchString))
+            {
+                pageNumber = 1;
+            }
+
+            var filters = new Filters
+            {
+                Sorting = new Sorting { SortOrder = sortOrder },
+                Filtering = new Filtering { SearchString = searchString },
+                Pagination = new Pagination { PageNumber = pageNumber ?? 1, PageSize = 10 }
+            };
+
+            ViewData["CurrentFilter"] = searchString;
+
             try
             {
-                var allMakes = await _vehicleMakeService.GetAllVehicleMakesAsync();
-                var makeViewModels = _mapper.Map<List<VehicleMakeView>>(allMakes.ToList());
+                var makes = await _vehicleMakeService.GetFilteredAndSortedMakesAsync(filters);
+
+                var makeViewModels = _mapper.Map<List<VehicleMakeView>>(makes);
+
+                var totalItems = makeViewModels.Count;
+
+                var pageSize = filters.Pagination.PageSize;
+                var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
 
                 var vehicleMakeViewModel = new VehicleMakeView
                 {
                     Makes = makeViewModels,
-                    Filters = new Filters()
+                    Filters = filters,
+                    TotalPages = totalPages,
+                    CurrentPage = filters.Pagination.PageNumber,
+                    PageSize = pageSize
                 };
 
                 return View(vehicleMakeViewModel);

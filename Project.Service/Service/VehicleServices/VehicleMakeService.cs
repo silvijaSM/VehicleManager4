@@ -25,7 +25,6 @@ namespace Project.Service.Service.VehicleServices
                 query = query.Where(make => make.Name != null && make.Name.Contains(filters.Filtering.SearchString));
             }
 
-            int totalItems = await query.CountAsync();
 
             if (!string.IsNullOrEmpty(filters.Sorting.SortOrder))
             {
@@ -46,12 +45,15 @@ namespace Project.Service.Service.VehicleServices
                 }
             }
 
-            query = query.Skip((filters.Pagination.PageNumber - 1) * filters.Pagination.PageSize)
-                         .Take(filters.Pagination.PageSize);
+            var totalItems = await query.CountAsync();
+            var pageSize = filters.Pagination.PageSize;
+            var pageNumber = filters.Pagination.PageNumber;
+
+            query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
 
             var items = await query.ToListAsync();
 
-            return await query.ToListAsync();
+            return items;
         }
 
 
