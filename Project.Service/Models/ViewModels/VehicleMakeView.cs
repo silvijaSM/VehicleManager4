@@ -13,10 +13,5 @@ namespace Project.Service.Models.ViewModels
         public string? Name { get; set; }
         public string? Abrv { get; set; }
 
-        public List<VehicleMakeView>? Makes  { get; set; }
-        public Filters? Filters { get; set; }
-        public int? TotalPages { get; set; }
-        public int? CurrentPage { get; set; }
-        public int PageSize { get; set; }
     }
 }

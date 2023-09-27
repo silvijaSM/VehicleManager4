@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Project.MVC;
 using Project.Service.Data;
 using Project.Service.Models.Entity;
 using System;
@@ -16,43 +17,27 @@ namespace Project.Service.Service.VehicleServices
             _context = context;
         }
 
-        public async Task<List<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters)
+        public async Task<PaginatedList<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters,
+            string searchString, string sortOrder, int pageNumber, int pageSize)
         {
             var query = _context.VehicleModel.AsQueryable();
 
-
-            if (!string.IsNullOrEmpty(filters.Filtering.SearchString))
+            if (filters != null)
             {
-                query = query.Where(model => model.Name != null && model.Name.Contains(filters.Filtering.SearchString));
-            }
-
-
-            if (!string.IsNullOrEmpty(filters.Sorting.SortOrder))
-            {
-                switch (filters.Sorting.SortOrder)
+                if (!string.IsNullOrEmpty(filters.Filtering.SearchString))
                 {
-                    case "Name":
-                        query = query.OrderBy(model => model.Name);
-                        break;
-                    case "name_desc":
-                        query = query.OrderByDescending(model => model.Name);
-                        break;
-                    case "Abrv":
-                        query = query.OrderBy(model => model.Abrv);
-                        break;
-                    case "abrv_desc":
-                        query = query.OrderByDescending(model => model.Abrv);
-                        break;
+                    query = query.Where(model => model.Name != null && model.Name.Contains(filters.Filtering.SearchString));
+                }
+
+                if (!string.IsNullOrEmpty(sortOrder))
+                {
+                    query = filters.Sorting.ApplySorting(query, sortOrder, model => model.Name != null);
                 }
             }
 
-            var totalItems = await query.CountAsync();
-            var pageSize = filters.Pagination.PageSize;
-            var pageNumber = filters.Pagination.PageNumber;
+            var count = await query.CountAsync();
 
-            query = query.Skip((pageNumber - 1) * pageSize).Take(pageSize);
-
-            var items = await query.ToListAsync();
+            var items = await PaginatedList<VehicleModel>.CreateAsync(query, pageNumber, pageSize);
 
             return items;
         }

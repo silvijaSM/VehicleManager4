@@ -11,13 +11,11 @@ namespace Project.Service.Service
     {
         public Filtering Filtering { get; set; }
         public Sorting Sorting { get; set; }
-        public Pagination Pagination { get; set; }
 
         public Filters()
         {
             Filtering = new Filtering();
             Sorting = new Sorting();
-            Pagination = new Pagination();
         }
     }
 }

@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
 using Project.Service.Models.Entity;
-using Project.Service.Models.ViewModels;
 using Project.Service.Service.VehicleServices;
 using Project.Service.Service;
+using Project.MVC.Models.ViewModels;
 
 namespace Project.MVC.Controllers
 {
@@ -31,36 +31,26 @@ namespace Project.MVC.Controllers
                 pageNumber = 1;
             }
 
-            var filters = new Filters
-            {
-                Sorting = new Sorting { SortOrder = sortOrder },
-                Filtering = new Filtering { SearchString = searchString },
-                Pagination = new Pagination { PageNumber = pageNumber ?? 1, PageSize = 10 }
-            };
-
-            ViewData["CurrentFilter"] = searchString;
-
             try
             {
-                var makes = await _vehicleMakeService.GetFilteredAndSortedMakesAsync(filters);
+                int pageSize = 10;
+                pageNumber ??= 1;
 
-                var makeViewModels = _mapper.Map<List<VehicleMakeView>>(makes);
-
-                var totalItems = makeViewModels.Count;
-
-                var pageSize = filters.Pagination.PageSize;
-                var totalPages = (int)Math.Ceiling((double)totalItems / pageSize);
-
-                var vehicleMakeViewModel = new VehicleMakeView
+                var filters = new Filters
                 {
-                    Makes = makeViewModels,
-                    Filters = filters,
-                    TotalPages = totalPages,
-                    CurrentPage = filters.Pagination.PageNumber,
-                    PageSize = pageSize
+                    Sorting = new Sorting { SortOrder = sortOrder },
+                    Filtering = new Filtering { SearchString = searchString }
                 };
 
-                return View(vehicleMakeViewModel);
+                var paginatedMakes = await _vehicleMakeService.GetFilteredAndSortedMakesAsync(
+                    filters, searchString, sortOrder, pageNumber.Value, pageSize);
+
+                var modelViewMakes = _mapper.Map<List<VehicleMake>, List<VehicleMakeView>>(paginatedMakes);
+
+                var paginatedViewModels = new PaginatedList<VehicleMakeView>(modelViewMakes, paginatedMakes.TotalItems, pageNumber.Value, pageSize);
+
+                return View(paginatedViewModels);
+
             }
             catch (Exception)
             {

@@ -1,4 +1,5 @@
-﻿using Project.Service.Models.Entity;
+﻿using Project.MVC;
+using Project.Service.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,7 +11,7 @@ namespace Project.Service.Service.VehicleServices
     public interface IVehicleModelService
     {
         Task<IQueryable<VehicleModel>> GetAllVehicleModelsAsync();
-        Task<List<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters);
+        Task<PaginatedList<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters, string searchString, string sortOrder, int pageNumber, int pageSize);
         Task<VehicleModel?> GetVehicleModelByIdAsync(int id);
         Task CreateVehicleModelAsync(VehicleModel model);
         Task UpdateVehicleModelAsync(VehicleModel model);

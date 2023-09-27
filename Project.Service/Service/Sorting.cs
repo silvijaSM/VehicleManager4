@@ -9,7 +9,7 @@ namespace Project.Service.Service
     public class Sorting
     {
         public string? SortOrder { get; set; }
-        public IQueryable<T> ApplySorting<T>(IQueryable<T> query, string sortOrder, Func<T, object> orderBy)
+        public IQueryable<T> ApplySorting<T>(IQueryable<T> query, string sortOrder, Func<T, object?> orderBy)
         {
             SortOrder = sortOrder;
 

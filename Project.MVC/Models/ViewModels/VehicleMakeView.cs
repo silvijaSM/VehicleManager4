@@ -1,18 +1,18 @@
-﻿using Project.Service.Service;
+﻿using Project.MVC.Models.ViewModels;
+using Project.Service.Models.Entity;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project.Service.Models.ViewModels
+namespace Project.MVC.Models.ViewModels
 {
-    public class VehicleModelView
+    public class VehicleMakeView
     {
         public int Id { get; set; }
         public string? Name { get; set; }
-
         public string? Abrv { get; set; }
-        public int MakeID { get; set; }
+
     }
 }

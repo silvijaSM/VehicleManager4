@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Project.Service.Data;
-using Project.Service.Mapping;
+using Project.MVC.Mapping;
 using Project.Service.Service;
 using Project.Service.Service.VehicleServices;
 

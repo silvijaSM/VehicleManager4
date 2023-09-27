@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using Project.Service.Models.Entity;
-using Project.Service.Models.ViewModels;
+using Project.MVC.Models.ViewModels;
 
 
-namespace Project.Service.Mapping
+namespace Project.MVC.Mapping
 {
     public class AutoMapperProfile : Profile
     {
