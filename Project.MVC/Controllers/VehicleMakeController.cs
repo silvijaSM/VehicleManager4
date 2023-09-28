@@ -12,19 +12,21 @@ namespace Project.MVC.Controllers
         private readonly IVehicleMakeService _vehicleMakeService;
         private readonly IMapper _mapper;
         private readonly Filters _filters;
+        private readonly Sorting _sorting;
 
-        public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper, Filters filters)
+        public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper, Filters filters, Sorting sorting)
         {
             _vehicleMakeService = vehicleMakeService;
             _mapper = mapper;
             _filters = filters;
+            _sorting = sorting;
         }
 
         // GET: VehicleMake
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name" : sortOrder;
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "Name_desc" : "Name";
             ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "Abrv_desc" : "Abrv";
 
             if (!string.IsNullOrEmpty(searchString))

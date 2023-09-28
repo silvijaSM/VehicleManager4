@@ -26,8 +26,10 @@ namespace Project.MVC.Controllers
         // GET: VehicleMake
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name" : "";
+            ViewData["CurrentSort"] = sortOrder;
+            ViewData["NameSortParm"] = sortOrder == "Name" ? "Name_desc" : "Name";
             ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "Abrv_desc" : "Abrv";
+            ViewData["MakeIdSortParm"] = sortOrder == "MakeId" ? "MakeId_desc" : "MakeId";
 
 
             if (!string.IsNullOrEmpty(searchString))

@@ -28,9 +28,16 @@ namespace Project.Service.Service.VehicleServices
                     query = query.Where(make => make.Name != null && make.Name.Contains(filters.Filtering.SearchString));
                 }
 
-                if (!string.IsNullOrEmpty(sortOrder))
+                if (!string.IsNullOrEmpty(sortOrder) && filters != null)
                 {
-                    query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name);
+                    if (sortOrder == "name")
+                    {
+                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name);
+                    }
+                    else if (sortOrder == "abrv")
+                    {
+                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Abrv);
+                    }
                 }
             }
 

@@ -23,6 +23,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IVehicleMakeService, VehicleMakeService>();
 builder.Services.AddScoped<IVehicleModelService, VehicleModelService>();
 builder.Services.AddScoped<Filters>();
+builder.Services.AddScoped<Sorting>();
 
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 

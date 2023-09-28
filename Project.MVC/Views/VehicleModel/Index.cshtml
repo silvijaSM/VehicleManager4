@@ -27,13 +27,13 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">Name</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@currentFilter">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">Abrv</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["AbrvSortParm"]" asp-route-currentFilter="@currentFilter">Abrv</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">MakeId</a>
+                <a asp-action="Index" asp-route-sortOrder="@ViewData["MakeIdSortParm"]" asp-route-currentFilter="@currentFilter">MakeId</a>
             </th>
             <th></th>
         </tr>
@@ -68,14 +68,14 @@
         @if (Model != null && Model.HasPreviousPage)
         {
             <li class="pagination-item">
-                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">Previous</a>
+                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex - 1)" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@currentFilter">Previous</a>
             </li>
         }
 
         @if (Model != null)
         {
             <li class="pagination-item @(Model.PageIndex == Model.TotalPages ? "is-active" : "")">
-                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">Next</a>
+                <a asp-action="Index" asp-route-pageNumber="@(Model.PageIndex + 1)" asp-route-sortOrder="@ViewData["CurrentSort"]" asp-route-currentFilter="@currentFilter">Next</a>
             </li>
         }
     </ul>

@@ -29,9 +29,16 @@ namespace Project.Service.Service.VehicleServices
                     query = query.Where(model => model.Name != null && model.Name.Contains(filters.Filtering.SearchString));
                 }
 
-                if (!string.IsNullOrEmpty(sortOrder))
+                if (!string.IsNullOrEmpty(sortOrder) && filters != null)
                 {
-                    query = filters.Sorting.ApplySorting(query, sortOrder, model => model.Name != null);
+                    if (sortOrder == "name")
+                    {
+                        query = filters.Sorting.ApplySorting(query, sortOrder, model => model.Name);
+                    }
+                    else if (sortOrder == "abrv")
+                    {
+                        query = filters.Sorting.ApplySorting(query, sortOrder, model => model.Abrv);
+                    }
                 }
             }
 
