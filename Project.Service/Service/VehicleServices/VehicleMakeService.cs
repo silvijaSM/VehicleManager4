@@ -30,7 +30,7 @@ namespace Project.Service.Service.VehicleServices
 
                 if (!string.IsNullOrEmpty(sortOrder))
                 {
-                    query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name != null);
+                    query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name);
                 }
             }
 

@@ -11,7 +11,7 @@ namespace Project.Service.Service.VehicleServices
     public interface IVehicleModelService
     {
         Task<IQueryable<VehicleModel>> GetAllVehicleModelsAsync();
-        Task<PaginatedList<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters, string searchString, string sortOrder, int pageNumber, int pageSize);
+        Task<PaginatedList<VehicleModel>> GetFilteredAndSortedModelsAsync(Filters filters, string searchString, string sortOrder, int pageNumber, int pageSize);
         Task<VehicleModel?> GetVehicleModelByIdAsync(int id);
         Task CreateVehicleModelAsync(VehicleModel model);
         Task UpdateVehicleModelAsync(VehicleModel model);

@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Vehicle Model";
     var currentPage = ViewData["CurrentPage"] as int? ?? 1;
-    var pageSize = ViewData["PageSize"] as int? ?? 10;
     var currentFilter = ViewData["CurrentFilter"] as string ?? "";
     var sortOrder = ViewData["CurrentSort"] as string ?? "";
 }
@@ -28,13 +27,13 @@
     <thead>
         <tr>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["NameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Name</a>
+                <a asp-action="Index" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">Name</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["AbrvSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">Abrv</a>
+                <a asp-action="Index" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">Abrv</a>
             </th>
             <th>
-                <a asp-action="Index" asp-route-sortOrder="@ViewData["MakeNameSortParm"]" asp-route-currentFilter="@ViewData["CurrentFilter"]">MakeId</a>
+                <a asp-action="Index" asp-route-sortOrder="@sortOrder" asp-route-currentFilter="@currentFilter">MakeId</a>
             </th>
             <th></th>
         </tr>

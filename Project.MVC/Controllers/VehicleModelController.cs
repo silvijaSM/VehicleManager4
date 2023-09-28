@@ -26,8 +26,9 @@ namespace Project.MVC.Controllers
         // GET: VehicleMake
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
-            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "name_desc" : "";
-            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
+            ViewData["NameSortParm"] = String.IsNullOrEmpty(sortOrder) ? "Name" : "";
+            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "Abrv_desc" : "Abrv";
+
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -45,7 +46,7 @@ namespace Project.MVC.Controllers
                     Filtering = new Filtering { SearchString = searchString }
                 };
 
-                var paginatedModels = await _vehicleModelService.GetFilteredAndSortedMakesAsync(
+                var paginatedModels = await _vehicleModelService.GetFilteredAndSortedModelsAsync(
                     filters, searchString, sortOrder, pageNumber.Value, pageSize);
 
                 var modelViewModels = _mapper.Map<List<VehicleModel>, List<VehicleModelView>>(paginatedModels);

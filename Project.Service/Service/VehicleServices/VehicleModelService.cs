@@ -17,7 +17,7 @@ namespace Project.Service.Service.VehicleServices
             _context = context;
         }
 
-        public async Task<PaginatedList<VehicleModel>> GetFilteredAndSortedMakesAsync(Filters filters,
+        public async Task<PaginatedList<VehicleModel>> GetFilteredAndSortedModelsAsync(Filters filters,
             string searchString, string sortOrder, int pageNumber, int pageSize)
         {
             var query = _context.VehicleModel.AsQueryable();
