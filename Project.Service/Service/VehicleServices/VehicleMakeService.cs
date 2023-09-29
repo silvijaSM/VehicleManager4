@@ -32,11 +32,11 @@ namespace Project.Service.Service.VehicleServices
                 {
                     if (sortOrder == "name")
                     {
-                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name);
+                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name ?? "");
                     }
                     else if (sortOrder == "abrv")
                     {
-                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Abrv);
+                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Abrv ?? "");
                     }
                 }
             }
