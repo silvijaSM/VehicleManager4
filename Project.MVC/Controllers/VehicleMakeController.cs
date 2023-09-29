@@ -52,6 +52,14 @@ namespace Project.MVC.Controllers
 
                 var paginatedViewModels = new PaginatedList<VehicleMakeView>(modelViewMakes, paginatedMakes.TotalItems, pageNumber.Value, pageSize);
 
+                Console.WriteLine($"Sorting order: {sortOrder}");
+                Console.WriteLine($"Count of paginatedMakes: {paginatedMakes.Count()}");
+
+                foreach (var item in paginatedMakes)
+                {
+                    Console.WriteLine($"Name: {item.Name}, Abrv: {item.Abrv}");
+                }
+
                 return View(paginatedViewModels);
 
             }
