@@ -12,22 +12,20 @@ namespace Project.MVC.Controllers
         private readonly IVehicleMakeService _vehicleMakeService;
         private readonly IMapper _mapper;
         private readonly Filters _filters;
-        private readonly Sorting _sorting;
 
-        public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper, Filters filters, Sorting sorting)
+        public VehicleMakeController(IVehicleMakeService vehicleMakeService, IMapper mapper, Filters filters)
         {
             _vehicleMakeService = vehicleMakeService;
             _mapper = mapper;
             _filters = filters;
-            _sorting = sorting;
         }
 
         // GET: VehicleMake
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = sortOrder == "Name" ? "Name_desc" : "Name";
-            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "Abrv_desc" : "Abrv";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["AbrvSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
 
             if (!string.IsNullOrEmpty(searchString))
             {
@@ -52,15 +50,7 @@ namespace Project.MVC.Controllers
 
                 var paginatedViewModels = new PaginatedList<VehicleMakeView>(modelViewMakes, paginatedMakes.TotalItems, pageNumber.Value, pageSize);
 
-                Console.WriteLine($"Sorting order: {sortOrder}");
-                Console.WriteLine($"Count of paginatedMakes: {paginatedMakes.Count()}");
-
-                foreach (var item in paginatedMakes)
-                {
-                    Console.WriteLine($"Name: {item.Name}, Abrv: {item.Abrv}");
-                }
-
-                return View(paginatedViewModels);
+               return View(paginatedViewModels);
 
             }
             catch (Exception)

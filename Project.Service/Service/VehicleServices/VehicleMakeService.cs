@@ -16,8 +16,8 @@ namespace Project.Service.Service.VehicleServices
             _context = context;
         }
 
-        public async Task<PaginatedList<VehicleMake>> GetFilteredAndSortedMakesAsync(Filters filters,
-            string searchString, string sortOrder, int pageNumber, int pageSize)
+        public async Task<PaginatedList<VehicleMake>> GetFilteredAndSortedMakesAsync(
+            Filters filters, string searchString, string sortOrder, int pageNumber, int pageSize)
         {
             var query = _context.VehicleMake.AsQueryable();
 
@@ -30,19 +30,11 @@ namespace Project.Service.Service.VehicleServices
 
                 if (!string.IsNullOrEmpty(sortOrder) && filters != null)
                 {
-                    if (sortOrder == "name")
-                    {
-                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name ?? "");
-                    }
-                    else if (sortOrder == "abrv")
-                    {
-                        query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Abrv ?? "");
-                    }
+                    query = filters.Sorting.ApplySorting(query, sortOrder, make => make.Name);
                 }
             }
 
             var count = await query.CountAsync();
-
             var items = await PaginatedList<VehicleMake>.CreateAsync(query, pageNumber, pageSize);
 
             return items;

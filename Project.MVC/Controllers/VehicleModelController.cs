@@ -27,9 +27,9 @@ namespace Project.MVC.Controllers
         public async Task<IActionResult> Index(string sortOrder, string searchString, int? pageNumber)
         {
             ViewData["CurrentSort"] = sortOrder;
-            ViewData["NameSortParm"] = sortOrder == "Name" ? "Name_desc" : "Name";
-            ViewData["AbrvSortParm"] = sortOrder == "Abrv" ? "Abrv_desc" : "Abrv";
-            ViewData["MakeIdSortParm"] = sortOrder == "MakeId" ? "MakeId_desc" : "MakeId";
+            ViewData["NameSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "Name" ? "name_desc" : "Name";
+            ViewData["AbrvSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "Abrv" ? "abrv_desc" : "Abrv";
+            ViewData["MakeIdSortParm"] = string.IsNullOrEmpty(sortOrder) || sortOrder == "MakeId" ? "makeId_desc" : "MakeId";
 
 
             if (!string.IsNullOrEmpty(searchString))
